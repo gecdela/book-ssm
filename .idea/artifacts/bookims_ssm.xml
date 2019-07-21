@@ -1,0 +1,9 @@
+<component name="ArtifactManager">
+  <artifact type="war" build-on-make="true" name="bookims-ssm">
+    <output-path>$PROJECT_DIR$/out/artifacts/bookims_ssm</output-path>
+    <root id="archive" name="bookims-ssm.war">
+      <element id="artifact" artifact-name="bookims-ssm:war exploded" />
+      <element id="dir-copy" path="$PROJECT_DIR$/web" />
+    </root>
+  </artifact>
+</component>

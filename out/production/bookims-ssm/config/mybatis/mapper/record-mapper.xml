@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.dao.RecordMapper">
+
+    <!-- 联合查询 -->
+    <resultMap type="com.mybatis.beans.Record" id="RecordMap">
+        <id column="record_id" property="recordId"/>
+        <result column="start_date" property="startDate"></result>
+        <result column="deadline" property="deadline"></result>
+        <result column="return_date" property="returnDate"></result>
+        <result column="status" property="status"></result>
+        <association property="user" javaType="com.mybatis.beans.User">
+            <id column="user_id" property="userId"/>
+            <result column="user_name" property="userName"/>
+            <result column="email" property="email"/>
+            <result column="tel" property="tel"/>
+        </association>
+        <association property="book" javaType="com.mybatis.beans.Book">
+            <id column="book_id" property="bookId"/>
+            <result column="book_name" property="bookName"/>
+        </association>
+    </resultMap>
+<select id="getRecordsByPage" resultMap="RecordMap">
+select r.record_id, r.start_date,r.deadline, r.return_date, r.status, u.user_id,u.user_name,u.tel,u.email,b.book_id,b.book_name from tb_record as r LEFT JOIN tb_user as u on r.user_id = u.user_id LEFT JOIN tb_book as b on b.book_id = r.book_id limit #{pageIndex},#{size}
+</select>
+    <select id="getLength" resultType="int">
+    select count(*) from tb_record
+</select>
+    <delete id="deleteRecordById">
+        delete from tb_record where record_id = #{recordId}
+    </delete>
+</mapper>

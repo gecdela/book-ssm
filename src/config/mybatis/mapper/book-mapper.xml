@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.dao.BookMapper">
+<select id="getBookById" resultType="com.mybatis.beans.Book">
+    select book_id bookId, book_name bookName, book_price bookPrice, book_author bookAuthor, book_pic bookPic,status from tb_book where book_id = #{bookId}
+</select>
+<select id="getBooksByPage" resultType="com.mybatis.beans.Book">
+    select book_id bookId, book_name bookName, book_price bookPrice, book_author bookAuthor, book_pic bookPic,status from tb_book limit #{pageIndex} , #{size}
+</select>
+<select id="query" resultType="com.mybatis.beans.Book">
+select book_id bookId, book_name bookName, book_price bookPrice, book_author bookAuthor, book_pic bookPic,status from tb_book where CONCAT(book_id, book_name,book_author, book_price, status) like #{condition} limit #{pageIndex}, #{size}
+</select>
+<select id="getLength" resultType="int">
+    select count(*) from tb_book
+</select>
+ <insert id="addBook" parameterType="com.mybatis.beans.Book">
+ insert into tb_book(book_name,book_author,book_price,book_pic, status) values(#{bookName},#{bookAuthor},#{bookPrice},#{bookPic},#{status})
+ </insert>
+    <insert id="borrowBook">
+ insert into tb_record(book_id,user_id,start_date, deadline,status) values(#{bookId},#{userId},#{startDate},#{deadline},#{status})
+ </insert>
+<update id="returnBook">
+ update tb_record set return_date = #{returnDate}, status = 1 where status = #{status} and book_id = #{bookId} and user_id = #{userId}
+ </update>
+<update id="updateBook">
+update tb_book set book_name=#{bookName},book_author=#{bookAuthor},book_price=#{bookPrice},book_pic=#{bookPic},status=#{status} where book_id=#{bookId}
+</update>
+    <update id="updateBookById">
+update tb_book set status=#{status} where book_id=#{bookId}
+</update>
+<delete id="deleteBookById">
+delete from tb_book where book_id=#{bookId}
+</delete>
+</mapper>

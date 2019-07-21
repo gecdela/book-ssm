@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+<settings>
+<!-- 设置数据库中xx_xx命名方式映射JavaBean中的驼峰命名方式 -->
+<setting name="mapUnderscoreToCamelCase" value="true"/>
+<!--  设置延迟加载-->
+<setting name="lazyLoadingEnabled" value="true"/>
+<setting name="aggressiveLazyLoading" value="false"/>
+</settings>
+<!--     <plugins>
+       <plugin interceptor="com.mybatis.dao.MapInterceptor">
+       </plugin>
+       
+    </plugins> -->
+
+
+
+
+</configuration>

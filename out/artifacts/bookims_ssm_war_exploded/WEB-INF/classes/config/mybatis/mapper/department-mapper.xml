@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.dao.DepartmentMapper">
+<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache> -->
+<select id="getDepts" resultType="com.mybatis.beans.Department">
+select id, dept_name from tb_department
+ </select>
+ <select id="getDeptById" resultType="com.mybatis.beans.Department">
+select id, dept_name from tb_department where id=#{id}
+ </select>
+ <!-- 
+<resultMap id="MyDept" type="com.mybatis.beans.Department">
+	 	 	 <id column="id" property="id"/>
+	 		 <result column="dept_name" property="deptName"/>
+	 		 <discriminator javaType="string" column="sex">
+	 		 <case value="0">
+	 		 <result column="sex" property="email"/>
+	 		 </case>
+	 		 <case value="1">
+	 		 <result column="sex" property="email"/>
+	 		 </case>
+	 		 </discriminator>
+</resultMap>
+<select id="getDeptById" resultMap="MyDept">
+select * from tb_department where id = #{id}
+ </select>
+<resultMap id="MyDifDept" type="com.mybatis.beans.Department">
+	 	 	 <id column="did" property="id"/>
+	 		 <result column="dept_name" property="deptName"/>
+		 		 <collection property="emps" ofType="com.mybatis.beans.Employee" >
+			 	 	 <id column="eid" property="id"/> 		 
+		 		 <result column="last_name" property="lastName"/>
+		 		 <result column="sex" property="sex"/>
+		 		 <result column="email" property="email"/>
+	 		 </collection>
+</resultMap>
+<select id="getEmpstByDeptId" resultMap="MyDifDept">
+ select d.id did,d.dept_name dept_name,
+ e.id eid, e.last_name last_name,
+ e.sex sex, e.email email, 
+ e.dept_id d_id from tb_department d  left join tb_employee e on e.dept_id = d.id where d.id = #{id}
+</select> -->
+<!-- <resultMap id="MyStepDept" type="com.mybatis.beans.Department">
+	 	 	 <id column="did" property="id"/>
+	 		 <result column="dept_name" property="deptName"/>
+	 		 column:指定分步查询传入的列名称，可以通过封装map，传递多列 
+	 		 	  fetchType:指定延迟查询
+	 		
+	 		 <collection property="emps" select="com.mybatis.dao.EmployeeMapperPlus.getEmpsByDeptIdStep" column="{dept_id=did}" fetchType="lazy">
+	 		 </collection>
+</resultMap>
+<select id="getEmpstByDeptIdStep" resultMap="MyStepDept">
+ select d.id did,d.dept_name dept_name from tb_department d where d.id = #{id}
+</select> -->
+</mapper>

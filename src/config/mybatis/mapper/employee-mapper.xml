@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mybatis.dao.EmployeeMapper">
+<!-- <cache type="org.mybatis.caches.ehcache.EhcacheCache"></cache> -->
+<!-- <cache eviction="FIFO" flushInterval="60000" readOnly="false" ></cache>
+ --><!-- eviction:缓存的回收策略
+	 flushInterval:缓存刷新间隔，默认不清空，单位毫秒值
+	 readOnly：是否只读
+	 size:存放多少元素
+	 tyoe:指定自定义缓存的全类名-->
+<!--
+	public void addEmp(Employee employee);
+	public void updateEmp(Employee employee);
+	public void deleteEmpById(Integer id);
+	public Map<String,Object> getByIdReturnMap(Integer id);
+	public List<Employee> queryForList(@Param("lastName")String lastName);
+	public Map<Integer, Employee> getEmployeeLikeReturnMap(String lastName);
+ -->
+<!--  resultType：建议用全类名  -->
+
+
+<!-- 联合查询 -->
+ <resultMap type="com.mybatis.beans.Employee" id="MyDifEmp">
+	 <id column="id" property="id"/>
+	 <result column="last_name" property="lastName"/>
+	 	 <result column="sex" property="sex"/>
+	 	 <result column="email" property="email"/>
+  <!--方式一：级联属性封装结果集-->
+<!-- 	 	 <result column="did" property="dept.id"/>
+	 	 <result column="dept_name" property="dept.deptName"/> -->
+	 	 <!--方式二：使用association封装级联属性结果集  -->
+	 	 <association property="dept" javaType="com.mybatis.beans.Department">
+	 	 	 <id column="did" property="id"/>
+	 		 <result column="dept_name" property="deptName"/>
+	 	 </association>
+
+ </resultMap>
+<select id="getEmps" resultMap="MyDifEmp">
+ select e.id id,e.last_name last_name,e.sex sex, e.email email,
+ e.dept_id d_id,d.id did,d.dept_name dept_name from
+ tb_employee e,tb_department d where e.dept_id = d.id
+</select>
+
+<!-- 条件查询 -->
+ <resultMap type="com.mybatis.beans.Employee" id="conditionEmp">
+	 <id column="id" property="id"/>
+	 <result column="last_name" property="lastName"/>
+	 	 <result column="sex" property="sex"/>
+	 	 <result column="email" property="email"/>
+  <!--方式一：级联属性封装结果集-->
+<!-- 	 	 <result column="did" property="dept.id"/>
+	 	 <result column="dept_name" property="dept.deptName"/> -->
+	 	 <!--方式二：使用association封装级联属性结果集  -->
+	 	 <association property="dept" javaType="com.mybatis.beans.Department">
+	 	 	 <id column="did" property="id"/>
+	 		 <result column="dept_name" property="deptName"/>
+	 	 </association>
+
+ </resultMap>
+
+
+<select id="query" resultMap="conditionEmp">
+ select e.id id,e.last_name last_name,e.sex sex, e.email email,
+ e.dept_id d_id,d.id did,d.dept_name dept_name from
+ tb_employee e left join tb_department d on  e.dept_id = d.id  where CONCAT(e.id, last_name, sex, email, e.dept_id, d.id, d.dept_name)  like #{condition}
+</select>
+
+
+<!-- 统计数据 -->
+<!--   <resultMap type="com.mybatis.beans.Employee" id="countEmp">
+	 <id column="id" property="id"/>
+	 <result column="last_name" property="dept_name"/>
+	 	 <result column="sex" property="count"/>
+ </resultMap> -->
+<select id="getDatas" resultType="java.util.HashMap">
+ select d.dept_name deptName, count(*) as count from
+ tb_employee e,tb_department d where e.dept_id = d.id GROUP BY dept_id
+</select>
+<select id="getPer" resultType="java.util.HashMap">
+ select d.dept_name name, ROUND(count(*) / (select count(*) from tb_employee) * 100) as value from
+ tb_employee e,tb_department d where e.dept_id = d.id GROUP BY dept_id
+</select>
+
+
+<!-- 分页查询 -->
+<!-- 联合查询 -->
+ <resultMap type="com.mybatis.beans.Employee" id="pageEmp">
+	 <id column="id" property="id"/>
+	 <result column="last_name" property="lastName"/>
+	 	 <result column="sex" property="sex"/>
+	 	 <result column="email" property="email"/>
+  <!--方式一：级联属性封装结果集-->
+<!-- 	 	 <result column="did" property="dept.id"/>
+	 	 <result column="dept_name" property="dept.deptName"/> -->
+	 	 <!--方式二：使用association封装级联属性结果集  -->
+	 	 <association property="dept" javaType="com.mybatis.beans.Department">
+	 	 	 <id column="did" property="id"/>
+	 		 <result column="dept_name" property="deptName"/>
+	 	 </association>
+
+ </resultMap>
+<select id="getEmpsByPage" resultMap="pageEmp">
+ select e.id id,e.last_name last_name,e.sex sex, e.email email,
+ e.dept_id d_id,d.id did,d.dept_name dept_name from
+ tb_employee e,tb_department d where e.dept_id = d.id limit #{param1} , #{param2}
+</select>
+<select id="getEmpById" resultType="com.mybatis.beans.Employee" useCache="true">
+select id, last_name lastName, sex, email  from tb_employee where id = #{id}
+ </select>
+ <select id="getLength" resultType="int">
+select count(*) from tb_employee
+ </select>
+
+<select id="login" resultType="com.mybatis.beans.User">
+ select user_id userId, user_name username,password, per, tel, email, head from tb_user where user_name = #{username} and password= #{password}
+</select>
+    <select id="getUserInfo" resultType="com.mybatis.beans.User">
+ select user_id userId, user_name username,password, per, tel, email, head from tb_user where user_name = #{username} and password= #{password}
+</select>
+<!-- <select id="getEmps" resultType="com.mybatis.beans.Employee">
+ select * from tb_employee
+</select> -->
+<!-- <select id="getByIdReturnMap" resultType="com.mybatis.beans.Employee">
+ select * from tb_employee where id = #{id}
+</select>
+<select id="queryForOne" resultType="com.mybatis.beans.Employee">
+ select * from tb_employee where id = #{id} and last_name = #{lastName}
+</select>
+<select id="queryForList" resultType="com.mybatis.beans.Employee">
+ select * from tb_employee where last_name like #{lastName}
+</select>
+<select id="getEmployeeLikeReturnMap" resultType="com.mybatis.beans.Employee">
+ select * from tb_employee where last_name like #{lastName}
+</select> -->
+ <!-- parameterType可省略 -->
+
+ <insert id="addEmp" parameterType="com.mybatis.beans.Employee">
+ insert into tb_employee(last_name,email,sex,dept_id) values(#{lastName},#{email},#{sex},#{dept.id})
+ </insert>
+<update id="updateEmp">
+update tb_employee set last_name=#{lastName},email=#{email},sex=#{sex},dept_id=#{dept.id} where id=#{id}
+</update>
+<delete id="deleteEmpById">
+delete from tb_employee where id=#{id}
+</delete>
+</mapper>
